@@ -1,0 +1,61 @@
+{
+  "name": "gitrohub",
+  "version": "2.3.3-multi",
+  "description": "GitroHub \u2014 GitHub from Telegram. Manage your GitHub repos directly from a Telegram bot.",
+  "main": "src/index.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "node --watch src/index.js",
+    "db:migrate": "node src/db/migrate.js",
+    "lint": "eslint src",
+    "check:patterns": "node scripts/check-patterns.js",
+    "smoke-test": "node scripts/smoke-test.js",
+    "verify": "npm run lint && npm run check:patterns && npm test && npm run test:traffic && npm run test:github && npm run test:resources && npm run test:warden && npm run test:v123 && npm run test:v124 && npm run test:v124:areas && npm run test:v125 && npm run test:v130 && npm run test:v130:restore && npm run test:v140 && npm run test:v212 && npm run test:v213 && npm run test:v214 && npm run test:v220 && npm run test:v221 && npm run test:v230 && npm run test:v231 && npm run test:v232 && npm run test:v233 && npm run smoke-test && npm run test:bot && npm run test:bot:crawl && npm run test:bot:mock && npm run test:bot:integration",
+    "test": "node scripts/unit-tests.js",
+    "test:bot": "node scripts/bot-route-audit.js",
+    "test:bot:crawl": "node scripts/bot-navigation-crawler.js",
+    "test:bot:mock": "node scripts/bot-mock-runner.js",
+    "test:bot:integration": "node scripts/bot-integration-runner.js",
+    "test:traffic": "node scripts/traffic-tests.js",
+    "test:github": "node scripts/github-e2e-tests.js",
+    "test:resources": "node scripts/resource-tests.js",
+    "test:warden": "node scripts/warden-tests.js",
+    "test:v123": "node scripts/v123-tests.js",
+    "test:v124": "node scripts/v124-tests.js",
+    "test:v124:areas": "node scripts/v124-areas-tests.js",
+    "test:v125": "node scripts/v125-tests.js",
+    "test:v130": "node scripts/v130-tests.js",
+    "test:v140": "node scripts/v140-tests.js",
+    "test:v212": "node scripts/v212-tests.js",
+    "test:v213": "node scripts/v213-tests.js",
+    "test:v214": "node scripts/v214-tests.js",
+    "test:v220": "node scripts/v220-tests.js",
+    "test:v221": "node scripts/v221-tests.js",
+    "test:v230": "node scripts/v230-tests.js",
+    "test:v231": "node scripts/v231-tests.js",
+    "test:v232": "node scripts/v232-tests.js",
+    "test:v233": "node scripts/v233-tests.js",
+    "test:v130:restore": "node scripts/v130-restore-tests.js",
+    "load-test": "node scripts/load-test.js"
+  },
+  "license": "SEE LICENSE IN LICENSE",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "@octokit/rest": "^20.1.1",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "fuse.js": "^7.0.0",
+    "jsonwebtoken": "^9.0.2",
+    "libsodium-wrappers": "^0.7.13",
+    "pg": "^8.12.0",
+    "pino": "^9.5.0",
+    "redis": "^4.7.0",
+    "telegraf": "^4.16.3"
+  },
+  "devDependencies": {
+    "eslint": "^8.57.0"
+  }
+}

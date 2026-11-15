@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="color-scheme" content="dark light" />
+<title>GitroHub — Status</title>
+<noscript><meta http-equiv="refresh" content="30" /></noscript>
+<style>
+/*ICON_CSS*/
+  :root {
+    color-scheme: dark;
+    --bg: #070a12; --bg2: #0e1424; --panel: #111829; --line: #202a44; --text: #eaf0ff; --muted: #94a3c4;
+    --ok: #22c55e; --warn: #f59e0b; --bad: #ef4444; --info: #60a5fa; --brand: #3b82f6; --brand2: #22d3ee;
+    --shadow: 0 18px 50px rgba(0,0,0,.45);
+  }
+  @media (prefers-color-scheme: light) {
+    :root:not([data-theme="dark"]) {
+      color-scheme: light;
+      --bg: #f3f6fc; --bg2: #e6edfb; --panel: #ffffff; --line: #d6dfef; --text: #0f172a; --muted: #5b6b8c;
+      --shadow: 0 14px 40px rgba(30,50,100,.12);
+    }
+  }
+  :root[data-theme="light"] {
+    color-scheme: light;
+    --bg: #f3f6fc; --bg2: #e6edfb; --panel: #ffffff; --line: #d6dfef; --text: #0f172a; --muted: #5b6b8c;
+    --shadow: 0 14px 40px rgba(30,50,100,.12);
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0; min-height: 100vh; min-height: 100dvh; color: var(--text);
+    background: radial-gradient(1100px 500px at 50% -10%, var(--bg2), var(--bg) 70%) fixed;
+    font-family: ui-rounded, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+    font-size: 16px; line-height: 1.5;
+    padding: 20px 16px max(24px, env(safe-area-inset-bottom));
+  }
+  .page { width: 100%; max-width: 980px; margin: 0 auto; }
+
+  header { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; }
+  header img { width: 40px; height: 40px; border-radius: 50%; flex: none; }
+  header h1 { margin: 0; font-size: 20px; letter-spacing: -.01em; line-height: 1.2; }
+  .ver { margin-left: 4px; font-size: 12px; color: var(--muted); border: 1px solid var(--line); border-radius: 999px; padding: 2px 9px; white-space: nowrap; }
+  .spacer { flex: 1; }
+  .theme { background: transparent; border: 1px solid var(--line); color: var(--muted); border-radius: 10px; width: 40px; height: 40px; font-size: 18px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; }
+  .theme .ic { width: 20px; height: 20px; }
+  .theme:hover { color: var(--text); }
+  .theme[hidden] { display: none; }
+
+  .banner {
+    display: flex; align-items: center; gap: 14px; padding: 18px 20px; border-radius: 18px;
+    background: var(--panel); border: 1px solid var(--line); box-shadow: var(--shadow); margin-bottom: 14px;
+  }
+  .banner .bico { flex: none; width: 40px; height: 40px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; color: var(--ok); background: color-mix(in srgb, var(--ok) 16%, transparent); }
+  .banner .bico .ic { width: 24px; height: 24px; }
+  .banner[data-state="degraded"] .bico { color: var(--warn); background: color-mix(in srgb, var(--warn) 16%, transparent); }
+  .banner[data-state="down"] .bico { color: var(--bad); background: color-mix(in srgb, var(--bad) 16%, transparent); }
+  .banner h2 { margin: 0; font-size: 20px; line-height: 1.25; }
+  .banner p { margin: 2px 0 0; color: var(--muted); font-size: 14px; }
+
+  .grid { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+  .tile { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 16px 16px 14px; min-width: 0; }
+  .tile .top { display: flex; align-items: center; justify-content: space-between; gap: 8px; color: var(--muted); font-size: 13px; }
+  .tile .top span:first-child { display: inline-flex; align-items: center; gap: 8px; }
+  .tile .top span:first-child .ic { width: 20px; height: 20px; color: var(--text); }
+  .tile .lamp { width: 18px; height: 18px; flex: none; color: var(--info); }
+  .tile[data-state="ok"] .lamp { color: var(--ok); }
+  .tile[data-state="warn"] .lamp { color: var(--warn); }
+  .tile[data-state="bad"] .lamp { color: var(--bad); }
+  .tile .lamp.ic.fill, .tile .lamp .ic { width: 18px; height: 18px; }
+  .tile .val { margin-top: 8px; font-size: 22px; font-weight: 700; letter-spacing: -.01em; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+  .tile .hint { margin-top: 2px; font-size: 13px; color: var(--muted); }
+
+  footer { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; margin-top: 16px; color: var(--muted); font-size: 13px; }
+  .btn { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 10px 18px; border-radius: 12px; text-decoration: none; font-weight: 650; font-size: 15px; color: #06121f; background: linear-gradient(135deg, var(--brand), var(--brand2)); }
+  .btn .ic { width: 18px; height: 18px; margin-right: 8px; }
+  .btn:focus-visible, .theme:focus-visible { outline: 3px solid #7fb0ff; outline-offset: 2px; }
+  .note { margin-top: 14px; font-size: 12.5px; color: var(--muted); }
+
+  @media (min-width: 900px) {
+    body { padding-top: 40px; }
+    header h1 { font-size: 24px; }
+    .banner { padding: 24px 28px; }
+    .banner h2 { font-size: 26px; }
+    .grid { grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .tile { padding: 20px; }
+    .tile .val { font-size: 26px; }
+  }
+  @media (max-width: 480px) { .tile { padding: 12px; } .tile .val { font-size: 18px; } }
+  @media (max-width: 380px) { .tile .val { font-size: 20px; } header h1 { font-size: 18px; } }
+  @media (prefers-reduced-motion: no-preference) { .banner .bico { animation: beat 2.4s ease-in-out infinite; } }
+  @keyframes beat { 50% { transform: scale(1.08); } }
+</style>
+<!--STATUS_INJECT-->
+</head>
+<body>
+<div class="page">
+  <header>
+    <img src="/logo.png" alt="" width="40" height="40" />
+    <h1>GitroHub</h1>
+    <span class="ver" id="ver">{{VERSION}}</span>
+    <span class="spacer"></span>
+    <button class="theme" id="theme" type="button" title="Switch light / dark" aria-label="Switch light or dark theme" hidden>{{ICON_THEME}}</button>
+  </header>
+
+  <section class="banner" id="banner" data-state="{{OVERALL}}" aria-live="polite">
+    <span class="bico" id="bico" aria-hidden="true">{{BANNER_ICON}}</span>
+    <div>
+      <h2 id="label">{{LABEL}}</h2>
+      <p>Live status of the bot and the services it depends on.</p>
+    </div>
+  </section>
+
+  <main class="grid" id="grid"><!--STATUS_TILES--></main>
+
+  <footer>
+    <span id="checked">Checked {{CHECKED}}</span>
+    <a class="btn" id="openBot" href="#">{{ICON_TELEGRAM}}Open GitroHub on Telegram</a>
+  </footer>
+  <p class="note">This page only shows whether the service is running. Everything else happens on Telegram.</p>
+</div>
+
+<script>
+(function () {
+  var DATA = window.__GITROHUB_STATUS__ || { botDeepLink: '#' };
+  document.getElementById('openBot').href = DATA.botDeepLink;
+
+  // Light / dark: follows the device by default; the button overrides and remembers (when storage is allowed).
+  var root = document.documentElement, btn = document.getElementById('theme');
+  try { var saved = localStorage.getItem('gh-theme'); if (saved === 'light' || saved === 'dark') root.setAttribute('data-theme', saved); } catch (e) {}
+  btn.hidden = false;
+  btn.addEventListener('click', function () {
+    var cur = root.getAttribute('data-theme') || (matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+    var next = cur === 'light' ? 'dark' : 'light';
+    root.setAttribute('data-theme', next);
+    try { localStorage.setItem('gh-theme', next); } catch (e) {}
+  });
+
+  function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  var ICONS = window.__GITROHUB_ICONS__ || {};
+  var STATE_ICON = { ok: 'ok', warn: 'warn', bad: 'bad', info: 'info' };
+  function ico(name) { return ICONS[name] || ''; }
+  function tile(t) {
+    return '<article class="tile" data-state="' + esc(t.state) + '"><div class="top"><span>' + ico(t.icon) + esc(t.label) + '</span><span class="lamp" aria-hidden="true">' + ico(STATE_ICON[t.state] || 'info') + '</span></div>' +
+      '<div class="val">' + esc(t.value) + '</div><div class="hint">' + esc(t.hint) + '</div></article>';
+  }
+  var left = 10, checkedAt = new Date();
+  function stamp() { document.getElementById('checked').textContent = 'Checked ' + checkedAt.toLocaleTimeString() + ' · refreshing in ' + left + 's'; }
+  var lastTiles = '', lastOverall = document.getElementById('banner').getAttribute('data-state');
+  function refresh() {
+    fetch('/status.json', { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (d) {
+      // Only repaint what changed, so the icons' one-time animations don't replay every refresh.
+      var sig = JSON.stringify(d.tiles);
+      if (lastTiles && sig !== lastTiles) document.getElementById('grid').innerHTML = d.tiles.map(tile).join('');
+      lastTiles = sig;
+      if (d.overall !== lastOverall) {
+        lastOverall = d.overall;
+        document.getElementById('bico').innerHTML = ico(d.overall === 'ok' ? 'ok' : d.overall === 'degraded' ? 'warn' : 'bad');
+      }
+      document.getElementById('banner').setAttribute('data-state', d.overall);
+      document.getElementById('label').textContent = d.label;
+      if (d.version) document.getElementById('ver').textContent = 'v' + d.version;
+      checkedAt = new Date(d.checkedAt);
+    }).catch(function () {
+      document.getElementById('banner').setAttribute('data-state', 'down');
+      document.getElementById('bico').innerHTML = ico('bad'); lastOverall = 'down';
+      document.getElementById('label').textContent = 'Can’t reach the status service';
+    }).then(function () { left = 10; stamp(); });
+  }
+  stamp();
+  setInterval(function () { left -= 1; if (left <= 0) refresh(); else stamp(); }, 1000);
+})();
+</script>
+</body>
+</html>
